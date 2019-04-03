@@ -1,6 +1,6 @@
 # Email Sender REST API
 
-Simple REST API node server for sending emails. Designed to be used in website contact forms. Build top of mailgun API.
+Simple REST API node server for sending emails. Designed to be used in website contact forms. Built top of mailgun API.
 
 ## Install
 
