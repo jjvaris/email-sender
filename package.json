@@ -1,12 +1,14 @@
 {
-  "name": "email-service",
-  "version": "0.0.0",
+  "name": "email-sender",
+  "version": "0.0.1",
+  "description": "A simple email sender express server",
   "private": true,
   "engines": {
     "node": "11.x"
   },
+  "main": "app.js",
   "scripts": {
-    "dev": "DEBUG=email-service* nodemon ./bin/www",
+    "dev": "DEBUG=email-sender* nodemon ./bin/www",
     "start": "node ./bin/www"
   },
   "dependencies": {
