@@ -19,11 +19,14 @@ const limiter = rateLimit({
 
 app.use(cors());
 app.use(logger('dev'));
-app.use(limiter);
 app.use(express.json());
 app.use(router);
 
 router.get('/api/health', (req, res) => res.sendStatus(200));
-router.post('/api/email', emailController.validate, emailController.sendEmail);
+router.post(
+  '/api/email',
+  [limiter, ...emailController.validate],
+  emailController.sendEmail
+);
 
 module.exports = app;

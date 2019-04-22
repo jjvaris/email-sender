@@ -24,6 +24,7 @@ const sendEmail = (req, res) => {
       console.log(data);
       res.sendStatus(500);
     } else {
+      console.log('Email send succesfully!');
       res.sendStatus(204);
     }
   });
