@@ -1,6 +1,7 @@
-const { check, validationResult } = require('express-validator/check');
-const { apiKey, domain, mailFrom, mailTo, mailSubject } = require('./config');
-const mailgun = require('mailgun-js')({ apiKey: apiKey, domain: domain });
+const { check, validationResult } = require('express-validator');
+const { apiKey, mailFrom, mailTo, mailSubject } = require('./config');
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(apiKey);
 
 const sendEmail = (req, res) => {
   const errors = validationResult(req);
@@ -10,36 +11,34 @@ const sendEmail = (req, res) => {
 
   const { name, from, phoneNumber, message } = req.body;
 
-  const data = {
-    from: `${name} <${mailFrom}>`,
+  const msg = {
     to: mailTo,
+    from: `${name} <${mailFrom}>`,
     subject: `${mailSubject} (${from})`,
     text: `${message}\n\n${name}\n${from}\n${phoneNumber ? phoneNumber : ''}`,
-    'h:Reply-To': from
+    replyTo: from,
   };
 
-  mailgun.messages().send(data, (error, body) => {
-    if (error) {
-      console.log('Failed to send email.', error);
-      console.log(data);
-      res.sendStatus(500);
-    } else {
-      console.log('Email send succesfully!');
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log('Email sent succesfully!');
       res.sendStatus(204);
-    }
-  });
+    })
+    .catch((error) => {
+      console.error(error);
+      console.log('Failed to send email.', error);
+      console.log(msg);
+      res.sendStatus(500);
+    });
 };
 
 const validate = [
   [
     check('from').isEmail(),
-    check('name')
-      .not()
-      .isEmpty(),
-    check('message')
-      .not()
-      .isEmpty()
-  ]
+    check('name').not().isEmpty(),
+    check('message').not().isEmpty(),
+  ],
 ];
 
 module.exports = { sendEmail, validate };
