@@ -18,7 +18,7 @@ const limiter = rateLimit({
 });
 
 app.use(cors());
-app.use(logger('dev'));
+app.use(logger('dev', { skip: () => process.env.NODE_ENV === 'production' }));
 app.use(express.json());
 app.use(router);
 
